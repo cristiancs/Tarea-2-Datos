@@ -43,7 +43,7 @@ void preOrden(ABB arbol){
 	}
 }
 
-void enOrden(ABB arbol, unsigned int *lista){
+void enOrden(ABB arbol, double *lista){
 	if(arbol!=NULL){
 		enOrden(arbol->izq, lista);
 		lista[arbol->exponente] = arbol->coeficiente;
@@ -75,17 +75,18 @@ void verArbol(ABB arbol, int n){
 }
 
 // Horner
-unsigned int horner(unsigned int *coeffs, int s, int x)
+double horner(double *coeffs, int s, double x)
 {
-	int i;
-	unsigned int res = 0.0;
-
-	for(i=s-1; i >= 0; i--)
-	{
-		res = res * x + coeffs[i];
-	}
-	return res;
+  int i;
+  double res = 0.0;
+ 
+  for(i=s-1; i >= 0; i--)
+  {
+    res = res * x + coeffs[i];
+  }
+  return res;
 }
+
 
 int main(){
 
@@ -160,32 +161,15 @@ int main(){
 			int polinomio = atoi(operaciones[1].c_str());
 
 			int grado = grados[polinomio];
-			float valor = atof(operaciones[2].c_str());
+			double valor = atof(operaciones[2].c_str());
 
-			// // unsigned int *coeffs[grado];
-			// unsigned int **coeffs;
-			// coeffs = malloc( sizeof(unsigned int) * grado);
-			// int i = 0;
-			// enOrden(polinomios[polinomio],coeffs);
-			// for (i = 0; i < grado; ++i)
-			// {
-			// 	cout << coeffs[grado] << endl;
-			// }
-			//cout << grado << "," << valor << endl;
+			// lista de coefientes
+			double *coeffs;
+			coeffs = (double *) calloc(grado, sizeof(double));
+			enOrden(polinomios[polinomio],coeffs);
+			cout <<  horner(coeffs, grado+1,valor) << endl;
 		}
 	}
-
-	// Horner
-	
-
-	//double coeffs[] = {-3, 3 };
-
-	// cout <<  horner(coeffs, 2,3.5) << endl;
-
-
-	//enOrden(polinomios[0]);
-	cout << "\n";
-	// cout << "\n";
 
 	return 0;
 }
