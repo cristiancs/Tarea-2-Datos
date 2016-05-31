@@ -34,12 +34,19 @@ void insertar(ABB &arbol, int coeficiente, unsigned int exponente){
 		insertar(arbol->der, coeficiente,exponente);
 }
 
-void preOrden(ABB arbol){
-	if(arbol!=NULL)
-	{
-		cout << arbol->coeficiente <<"x^" << arbol->exponente << " ";
-		preOrden(arbol->izq);
-		preOrden(arbol->der);
+void buscar(ABB arbol, int* coeficiente, unsigned int exponente){
+	if(arbol!=NULL){
+		cout << arbol->exponente << "," << exponente << endl;
+		if(exponente == arbol->exponente){
+			cout << arbol->coeficiente << endl;
+			*coeficiente = arbol->coeficiente;
+		}
+		else if(exponente > arbol->exponente){
+			buscar(arbol->der, coeficiente, exponente);
+		}
+		else{
+			buscar(arbol->izq, coeficiente, exponente);
+		}
 	}
 }
 
@@ -154,7 +161,13 @@ int main(){
 		}
 		iss.clear();
 		if(operaciones[0] == "COEFICIENTE"){
-			// Buscar Coeficiente
+			int polinomio = atoi(operaciones[1].c_str());
+			unsigned int exponente = atof(operaciones[2].c_str());
+			int* coeficiente = (int*) malloc(sizeof(int));
+			*coeficiente = 0;
+			buscar(polinomios[polinomio], coeficiente, exponente);
+			cout << "[coeficiente] " << *coeficiente << endl;
+			free((void *) coeficiente);
 		}
 		else if(operaciones[0] == "EVALUAR"){
 			// Horner
@@ -167,7 +180,8 @@ int main(){
 			double *coeffs;
 			coeffs = (double *) calloc(grado, sizeof(double));
 			enOrden(polinomios[polinomio],coeffs);
-			cout <<  horner(coeffs, grado+1,valor) << endl;
+			cout << "[horner] " <<  horner(coeffs, grado+1,valor) << endl;
+			free((void *) coeffs);
 		}
 	}
 
