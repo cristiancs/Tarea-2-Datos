@@ -14,6 +14,18 @@ struct nodo{
 
 typedef struct nodo *ABB;
 
+/*****
+* ABB CrearNodo
+******
+* Crea nuevos nodos en el arbol binario
+******
+* Input:
+* int coeficiente : Coeficiente del monomio a almacenar
+* unsigned int exponente : Exponente del monomio a almacenar
+******
+* Returns:
+* ABB nuevoNodo, Nodo creado con los valores ingresados
+*****/
 ABB crearNodo(int coeficiente, unsigned int exponente){
 	ABB nuevoNodo = new(struct nodo);
 	nuevoNodo->coeficiente = coeficiente;
@@ -23,6 +35,19 @@ ABB crearNodo(int coeficiente, unsigned int exponente){
 
 	return nuevoNodo;
 }
+/*****
+* void insertar
+******
+* Inserta un elemento en el arbol ABB
+******
+* Input:
+ABB &arbol: Arbol donde se insertara el nodo
+int coeficiente: Coeficiente del monomio
+unsigned int exponente: Exponente del monomio
+******
+* Returns:
+* no retorna nada
+*****/
 void insertar(ABB &arbol, int coeficiente, unsigned int exponente){
 	if(arbol==NULL)
 	{
@@ -33,7 +58,19 @@ void insertar(ABB &arbol, int coeficiente, unsigned int exponente){
 	else if(exponente > arbol->exponente)
 		insertar(arbol->der, coeficiente,exponente);
 }
-
+/*****
+* void buscar
+******
+* Busca el elemento con el mismo exponente en el arbol
+******
+* Input:
+ABB arbol : Arbol donde se buscaa
+int* coeficiente : Puntero al coeficiente que se guardara al encontrar el valor
+unsigned int exponente : Exponente Buscado
+******
+* Returns:
+* No retorna nada
+*****/
 void buscar(ABB arbol, int* coeficiente, unsigned int exponente){
 	if(arbol!=NULL){
 		if(exponente == arbol->exponente){
@@ -47,7 +84,18 @@ void buscar(ABB arbol, int* coeficiente, unsigned int exponente){
 		}
 	}
 }
-
+/*****
+* void enOrden
+******
+* Resumen Función
+******
+* Input:
+ABB arbol : Arbol donde se realiza la busqueda
+double *lista : Puntero de la lista donde se guardaran los exponentes de cada coeficiente
+******
+* Returns:
+* No retorna anda
+*****/
 void enOrden(ABB arbol, double *lista){
 	if(arbol!=NULL){
 		enOrden(arbol->izq, lista);
@@ -56,7 +104,19 @@ void enOrden(ABB arbol, double *lista){
 	}
 }
 
-// Horner
+/*****
+* double horner
+******
+* Resumen Función
+******
+* Input:
+double *coeffs : Puntero a la lista de coeficientes
+int s : Grado del polinomio
+double x : Valor a evaluar el polinomio
+******
+* Returns:
+* double res, Resultado de evaluar el polinomio en x
+*****/
 double horner(double *coeffs, int s, double x)
 {
   int i;
