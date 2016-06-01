@@ -117,8 +117,7 @@ double x : Valor a evaluar el polinomio
 * Returns:
 * double res, Resultado de evaluar el polinomio en x
 *****/
-double horner(double *coeffs, int s, double x)
-{
+double horner(double *coeffs, int s, double x){
   int i;
   double res = 0.0;
  
@@ -153,9 +152,7 @@ int main(){
 	unsigned int leidos = 0;
 	int i = 0;
 	stringstream iss;
-	//cout << "[debug]" << cantidad << endl;
 	while(leidos < cantidad){
-	//cout << "[debug]" << leidos << "," << cantidad << endl;
 		getline(polinomiosFile,lectura);
 		int monomios = atoi(lectura.c_str());
 		int exponente;
@@ -167,7 +164,6 @@ int main(){
 			getline(polinomiosFile,lectura);
 			iss << lectura;
 			int pos  = 0;
-			//cout << lectura << endl;
 			while ( getline(iss, read, ' ') )
 			{
 				monomio[pos] = read;
