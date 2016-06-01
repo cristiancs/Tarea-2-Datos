@@ -91,7 +91,7 @@ int main(){
 	int grados[cantidad+2];
 	// Pasar los Polinomios a ABB
 	unsigned int leidos = 0;
-	unsigned int i = 0;
+	int i = 0;
 	stringstream iss;
 	//cout << "[debug]" << cantidad << endl;
 	while(leidos < cantidad){
