@@ -36,9 +36,7 @@ void insertar(ABB &arbol, int coeficiente, unsigned int exponente){
 
 void buscar(ABB arbol, int* coeficiente, unsigned int exponente){
 	if(arbol!=NULL){
-		cout << arbol->exponente << "," << exponente << endl;
 		if(exponente == arbol->exponente){
-			cout << arbol->coeficiente << endl;
 			*coeficiente = arbol->coeficiente;
 		}
 		else if(exponente > arbol->exponente){
@@ -54,31 +52,8 @@ void enOrden(ABB arbol, double *lista){
 	if(arbol!=NULL){
 		enOrden(arbol->izq, lista);
 		lista[arbol->exponente] = arbol->coeficiente;
-		//cout << arbol->coeficiente <<"x^" << arbol->exponente << " ";
 		enOrden(arbol->der, lista);
 	}
-}
-
-void postOrden(ABB arbol){
-	if(arbol!=NULL)
-	{
-		postOrden(arbol->izq);
-		postOrden(arbol->der);
-		cout << arbol->coeficiente <<"x^" << arbol->exponente << " ";
-	}
-}
-
-void verArbol(ABB arbol, int n){
-	if(arbol==NULL)
-		return;
-	verArbol(arbol->der, n+1);
-
-	for(int i=0; i<n; i++)
-		cout<<"   ";
-
-	cout << arbol->coeficiente <<"x^" << arbol->exponente << " +";
-
-	verArbol(arbol->izq, n+1);
 }
 
 // Horner
@@ -150,6 +125,8 @@ int main(){
 
 	// Operaciones
 	string read;
+	ofstream salidaFile;
+	salidaFile.open("salidaPolinomio.txt");
 	while (getline(polinomiosFile,lectura)){
 		string operaciones[3];
 		int pos = 0;
@@ -166,7 +143,7 @@ int main(){
 			int* coeficiente = (int*) malloc(sizeof(int));
 			*coeficiente = 0;
 			buscar(polinomios[polinomio], coeficiente, exponente);
-			cout << "[coeficiente] " << *coeficiente << endl;
+			salidaFile << *coeficiente << "\n";
 			free((void *) coeficiente);
 		}
 		else if(operaciones[0] == "EVALUAR"){
@@ -180,10 +157,11 @@ int main(){
 			double *coeffs;
 			coeffs = (double *) calloc(grado, sizeof(double));
 			enOrden(polinomios[polinomio],coeffs);
-			cout << "[horner] " <<  horner(coeffs, grado+1,valor) << endl;
+			salidaFile <<  horner(coeffs, grado+1,valor) << "\n";
 			free((void *) coeffs);
 		}
 	}
-
+	polinomiosFile.close();
+	salidaFile.close();
 	return 0;
 }
