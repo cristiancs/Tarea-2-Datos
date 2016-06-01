@@ -65,13 +65,13 @@ void insertar(ABB &arbol, int coeficiente, unsigned int exponente){
 ******
 * Input:
 ABB arbol : Arbol donde se buscaa
-int* coeficiente : Puntero al coeficiente que se guardara al encontrar el valor
+float* coeficiente : Puntero al coeficiente que se guardara al encontrar el valor
 unsigned int exponente : Exponente Buscado
 ******
 * Returns:
 * No retorna nada
 *****/
-void buscar(ABB arbol, int* coeficiente, unsigned int exponente){
+void buscar(ABB arbol, float* coeficiente, unsigned int exponente){
 	if(arbol!=NULL){
 		if(exponente == arbol->exponente){
 			*coeficiente = arbol->coeficiente;
@@ -196,7 +196,7 @@ int main(){
 		if(operaciones[0] == "COEFICIENTE"){
 			int polinomio = atoi(operaciones[1].c_str());
 			unsigned int exponente = atof(operaciones[2].c_str());
-			int* coeficiente = (int*) malloc(sizeof(int));
+			float* coeficiente = (float*) malloc(sizeof(float));
 			*coeficiente = 0;
 			buscar(polinomios[polinomio], coeficiente, exponente);
 			salidaFile << *coeficiente << "\n";
