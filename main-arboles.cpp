@@ -176,7 +176,8 @@ int main(){
 		++i;
 	}
 
-	int grados[cantidad];
+	// int grados[cantidad];
+	unsigned int mayorGrado[cantidad];
 	// Pasar los Polinomios a ABB
 	int leidos = 0;
 	
@@ -184,7 +185,7 @@ int main(){
 	while(leidos < cantidad){
 		getline(polinomiosFile,lectura);
 		int monomios = atoi(lectura.c_str());
-		int exponente;
+		unsigned int exponente;
 		int coeficiente;
 		i = 0;
 		while(i < monomios){
@@ -200,8 +201,11 @@ int main(){
 			}
 			iss.clear();
 			exponente = atoi((monomio[0]).c_str());
+			if(exponente > mayorGrado[i]){
+				mayorGrado[i] = exponente;
+			}
 			coeficiente = atoi((monomio[1]).c_str());
-			grados[leidos] = monomios;
+			// grados[leidos] = monomios;
 			insertar(polinomios[leidos], coeficiente, exponente);
 			i++;
 		}
@@ -236,19 +240,28 @@ int main(){
 			// Horner
 			int polinomio = atoi(operaciones[1].c_str());
 
-			int grado = grados[polinomio];
+			int elementos = mayorGrado[polinomio];
 			double valor = atof(operaciones[2].c_str());
 
 			// lista de coefientes
-			double coeffs[grado];
+			double coeffs[elementos];
 			i = 0;
-			while(i <= grado){
+			while(i <= elementos){
 				coeffs[i] = 0;
 				++i;
 			}
 
 			enOrden(polinomios[polinomio],coeffs);
-			salidaFile << std::fixed << std::setprecision(6) << horner(coeffs, grado+1,valor) << "\n";
+			i = 0;
+			while(i <= elementos){
+				// coeffs[i] = 0;
+				if(coeffs[i] != 0){
+					cout << coeffs[i] << "," << i << ";";
+				}
+				
+				++i;
+			}
+			salidaFile << std::fixed << std::setprecision(6) << horner(coeffs, elementos+1,valor) << "\n";
 			//salidaFile <<  horner(coeffs, grado+1,valor)  << "\n";
 
 		}
