@@ -8,7 +8,7 @@
 using namespace std;
 // Implementación ABB Polinomios
 struct nodo{
-	int coeficiente;
+	float coeficiente;
 	unsigned int exponente;
 	struct nodo *izq, *der;
 };
@@ -21,13 +21,14 @@ typedef struct nodo *ABB;
 * Crea nuevos nodos en el arbol binario
 ******
 * Input:
-* int coeficiente : Coeficiente del monomio a almacenar
+* float coeficiente : Coeficiente del monomio a almacenar
 * unsigned int exponente : Exponente del monomio a almacenar
 ******
 * Returns:
 * ABB nuevoNodo, Nodo creado con los valores ingresados
 *****/
-ABB crearNodo(int coeficiente, unsigned int exponente){
+ABB crearNodo(float coeficiente, unsigned int exponente){
+
 	ABB nuevoNodo = new(struct nodo);
 	nuevoNodo->coeficiente = coeficiente;
 	nuevoNodo->exponente = exponente;
@@ -43,13 +44,13 @@ ABB crearNodo(int coeficiente, unsigned int exponente){
 ******
 * Input:
 ABB &arbol: Arbol donde se insertara el nodo
-int coeficiente: Coeficiente del monomio
+float coeficiente: Coeficiente del monomio
 unsigned int exponente: Exponente del monomio
 ******
 * Returns:
 * no retorna nada
 *****/
-void insertar(ABB &arbol, int coeficiente, unsigned int exponente){
+void insertar(ABB &arbol, float coeficiente, unsigned int exponente){
 	if(arbol==NULL)
 	{
 		arbol = crearNodo(coeficiente,exponente);
@@ -186,7 +187,7 @@ int main(){
 		getline(polinomiosFile,lectura);
 		int monomios = atoi(lectura.c_str());
 		unsigned int exponente;
-		int coeficiente;
+		float coeficiente;
 		i = 0;
 		while(i < monomios){
 			string read;
@@ -204,8 +205,7 @@ int main(){
 			if(exponente > mayorGrado[i]){
 				mayorGrado[i] = exponente;
 			}
-			coeficiente = atoi((monomio[1]).c_str());
-			// grados[leidos] = monomios;
+			coeficiente = atof((monomio[1]).c_str());
 			insertar(polinomios[leidos], coeficiente, exponente);
 			i++;
 		}
@@ -228,13 +228,13 @@ int main(){
 		iss.clear();
 		if(operaciones[0] == "COEFICIENTE"){
 			int polinomio = atoi(operaciones[1].c_str());
-			unsigned int exponente = atof(operaciones[2].c_str());
+			unsigned int exponente = atoi(operaciones[2].c_str());
 			float* coeficiente = (float*) malloc(sizeof(float));
 			*coeficiente = 0;
 			buscar(polinomios[polinomio], coeficiente, exponente);
-			int valor = *coeficiente;
+			float valor = *coeficiente;
 			free((void *) coeficiente);
-			salidaFile << valor << "\n";
+			salidaFile << std::fixed << std::setprecision(6) << valor << "\n";
 		}
 		else if(operaciones[0] == "EVALUAR"){
 			// Horner
@@ -252,15 +252,6 @@ int main(){
 			}
 
 			enOrden(polinomios[polinomio],coeffs);
-			i = 0;
-			while(i <= elementos){
-				// coeffs[i] = 0;
-				if(coeffs[i] != 0){
-					cout << coeffs[i] << "," << i << ";";
-				}
-				
-				++i;
-			}
 			salidaFile << std::fixed << std::setprecision(6) << horner(coeffs, elementos+1,valor) << "\n";
 			//salidaFile <<  horner(coeffs, grado+1,valor)  << "\n";
 
