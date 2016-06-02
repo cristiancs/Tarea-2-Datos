@@ -3,6 +3,7 @@
 // #include <string>
 #include <stdlib.h>     /* atoi */
 #include <sstream>
+#include <iomanip>
 
 using namespace std;
 // Implementación ABB Polinomios
@@ -141,7 +142,7 @@ double x : Valor a evaluar el polinomio
 *****/
 double horner(double coeffs[], int s, double x){
   int i;
-  double res = 0.0;
+  double res = 0.000000;
  
   for(i=s-1; i >= 0; i--)
   {
@@ -247,8 +248,8 @@ int main(){
 			}
 
 			enOrden(polinomios[polinomio],coeffs);
-
-			salidaFile <<  horner(coeffs, grado+1,valor)  << "\n";
+			salidaFile << std::fixed << std::setprecision(6) << horner(coeffs, grado+1,valor) << "\n";
+			//salidaFile <<  horner(coeffs, grado+1,valor)  << "\n";
 
 		}
 	}
