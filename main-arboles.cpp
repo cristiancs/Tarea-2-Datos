@@ -59,7 +59,17 @@ void insertar(ABB &arbol, int coeficiente, unsigned int exponente){
 		insertar(arbol->der, coeficiente,exponente);
 }
 
-
+/*****
+* void liberar
+******
+* Libera la memoria del ABB
+******
+* Input:
+ABB arbol: Arbol a Liberar
+******
+* Returns:
+* no retorna nada
+*****/
 void liberar(ABB arbol)
 {
      if(arbol!=NULL)
