@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <string>
+// #include <string>
 #include <stdlib.h>     /* atoi */
 #include <sstream>
 
@@ -58,6 +58,18 @@ void insertar(ABB &arbol, int coeficiente, unsigned int exponente){
 	else if(exponente > arbol->exponente)
 		insertar(arbol->der, coeficiente,exponente);
 }
+
+
+void liberar(ABB arbol)
+{
+     if(arbol!=NULL)
+     {
+          liberar(arbol->izq);
+          liberar(arbol->der);
+          free((void *) arbol);
+     }
+}
+
 /*****
 * void buscar
 ******
@@ -96,7 +108,7 @@ double *lista : Puntero de la lista donde se guardaran los exponentes de cada co
 * Returns:
 * No retorna anda
 *****/
-void enOrden(ABB arbol, double *lista){
+void enOrden(ABB arbol, double lista[]){
 	if(arbol!=NULL){
 		enOrden(arbol->izq, lista);
 		lista[arbol->exponente] = arbol->coeficiente;
@@ -117,7 +129,7 @@ double x : Valor a evaluar el polinomio
 * Returns:
 * double res, Resultado de evaluar el polinomio en x
 *****/
-double horner(double *coeffs, int s, double x){
+double horner(double coeffs[], int s, double x){
   int i;
   double res = 0.0;
  
@@ -139,18 +151,24 @@ int main(){
 
    	// Verificar si se abrio bien el archivo
 	if (!polinomiosFile.is_open()) {
-		cout << "Error al abrir el archivo";
+		cout << "Error al abrir el archivo" << endl;
 		return 0;
 	}
    	// Obtener Cantidad de Polinomios
 	getline(polinomiosFile,lectura);
 	cantidad = atoi(lectura.c_str());
 	// Crear un array de ABB
-	ABB polinomios[cantidad+2];
-	int grados[cantidad+2];
-	// Pasar los Polinomios a ABB
-	unsigned int leidos = 0;
+	ABB polinomios[cantidad];
 	int i = 0;
+	while (i < cantidad){
+		polinomios[i] = NULL;
+		++i;
+	}
+
+	int grados[cantidad];
+	// Pasar los Polinomios a ABB
+	int leidos = 0;
+	
 	stringstream iss;
 	while(leidos < cantidad){
 		getline(polinomiosFile,lectura);
@@ -199,8 +217,9 @@ int main(){
 			float* coeficiente = (float*) malloc(sizeof(float));
 			*coeficiente = 0;
 			buscar(polinomios[polinomio], coeficiente, exponente);
-			salidaFile << *coeficiente << "\n";
+			int valor = *coeficiente;
 			free((void *) coeficiente);
+			salidaFile << valor << "\n";
 		}
 		else if(operaciones[0] == "EVALUAR"){
 			// Horner
@@ -210,14 +229,26 @@ int main(){
 			double valor = atof(operaciones[2].c_str());
 
 			// lista de coefientes
-			double *coeffs;
-			coeffs = (double *) calloc(grado, sizeof(double));
+			double coeffs[grado];
+			i = 0;
+			while(i <= grado){
+				coeffs[i] = 0;
+				++i;
+			}
+
 			enOrden(polinomios[polinomio],coeffs);
-			salidaFile <<  horner(coeffs, grado+1,valor) << "\n";
-			free((void *) coeffs);
+
+			salidaFile <<  horner(coeffs, grado+1,valor)  << "\n";
+
 		}
 	}
 	polinomiosFile.close();
 	salidaFile.close();
+	i = 0;
+	while(i < cantidad){
+		liberar(polinomios[i]);
+		++i;
+	}
+	
 	return 0;
 }
