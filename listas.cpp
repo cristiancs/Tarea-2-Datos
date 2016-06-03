@@ -23,10 +23,9 @@ public:
   ~Lista_ord(); 
   bool buscarValor(int a, float* coeficiente);
   bool buscar(int a);
-  bool actualizar(int a, int valor);
+  bool actualizar(int a, float valor);
   bool push(int a);
   bool borrar(int a);
-  void pintar();
   int pop();
   int get_cuantos();
 };
@@ -51,15 +50,14 @@ Lista_ord::~Lista_ord(){
 }
 
 
-bool Lista_ord::actualizar(int posicion, int valor){
+bool Lista_ord::actualizar(int posicion, float valor){
     caja *p;
     int i = 0;
     p = principio;
-    if (!p){
+  	if (!p){
       donde = VACIO;
       return false;
     }
-
     while (p){
       if (i == posicion){
       	p->valor = valor;
@@ -291,7 +289,8 @@ int main(){
 				coeficiente = atof((monomio[1]).c_str());
 				//funcionaba a las 17:17, ants del while a continuacion
 				//SOLO REEMPLAZAR ;
-				Poli[leidos].actualizar(exponente,coeficiente);
+				Poli[leidos].actualizar(exponente,coeficiente);				
+				//cout<<Poli[leidos].buscar(1)<<"BUSCAR\n\n";
 				cout <<"exponente1:"<<exponente<<"\n";
 				cout <<"coeficiente1:"<<coeficiente<<"\n";
 				cout <<"\n";
@@ -303,33 +302,38 @@ int main(){
 	string read;
 	ofstream salidaFile;
 	salidaFile.open("salidaPolinomio.txt");
-	cout<< getline(polinomiosFile1,lectura1)<<"\n";
+	
 	while (getline(polinomiosFile1,lectura1)){
 		cout<< "entre al while\n";
 		string operaciones[3];
-		cout <<operaciones;
 		int pos = 0;
-		iss << lectura;
+		iss << lectura1;
 		while ( getline(iss, read, ' ') )
 		{
 			operaciones[pos] = read;
 			++pos;
 		}
 		iss.clear();
+		cout<< operaciones[0]<< "_operacion\n";
 		if(operaciones[0] == "COEFICIENTE"){
 			int polinomio = atoi(operaciones[1].c_str());
-			cout <<polinomio<<"\n";
+			cout <<polinomio<<"_polinomio\n";
 			unsigned int exponente = atoi(operaciones[2].c_str());
+			cout <<exponente<<"_exponente\n";
 			float* coeficiente = (float*) malloc(sizeof(float));
-			*coeficiente = 0;
+			//*coeficiente = 0;//borrar?
 			Poli[polinomio].buscarValor(exponente, coeficiente);
-			float valor = *coeficiente;
-			cout<< valor<<"el valor encontrado\n";
+			float valor = *coeficiente;//borrar y definir arriba?
+			cout<< valor  <<"el valor encontrado\n";
 			free((void *) coeficiente);
 			salidaFile << std::fixed << std::setprecision(6) << valor << "\n";
 
 		}
 		else if(operaciones[0] == "EVALUAR"){
+			//int polinomio = atoi(operaciones[1].c_str());
+
+			//int grado = grados[polinomio];
+			//double valor = atof(operaciones[2].c_str());
 			// Horner
 
 		}
