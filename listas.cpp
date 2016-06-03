@@ -8,176 +8,170 @@
 using namespace std;
 
 struct caja{
-  int valor;
-  caja* siguiente;
+	double valor;
+	caja* siguiente;
 };
 
 class Lista_ord{
-  caja *principio, *anterior;
-  int cuantos;
-  bool encontrado;
-  enum donde_enum{VACIO, PRINCIPIO, ENMEDIO, FINAL};
-  donde_enum donde;
+	caja *principio, *anterior;
+	unsigned int cuantos;
+	bool encontrado;
+	enum donde_enum{VACIO, PRINCIPIO, ENMEDIO, FINAL};
+	donde_enum donde;
 public:
-  Lista_ord();
-  ~Lista_ord(); 
-  bool buscarValor(int a, float* coeficiente);
-  bool buscar(int a);
-  bool actualizar(int a, float valor);
-  bool push(int a);
-  bool borrar(int a);
-  int pop();
-  int get_cuantos();
+	Lista_ord();
+	~Lista_ord(); 
+	bool buscarValor(unsigned int a, double* coeficiente);
+	bool buscar(double a);
+	bool actualizar(unsigned int a, double valor);
+	bool push(double a);
+	bool borrar();
+	int get_cuantos();
 };
 
 Lista_ord::Lista_ord(){
-    principio = NULL;
-    anterior = NULL;
-    cuantos = 0;
-    encontrado = false;
-    donde = VACIO;
+	principio = NULL;
+	anterior = NULL;
+	cuantos = 0;
+	encontrado = false;
+	donde = VACIO;
 }
 
 Lista_ord::~Lista_ord(){
-    caja *p, *q;
-    p = principio;
-    while(p){
-        q = p;
-        p = p -> siguiente;
-        delete q;
-    }
-    cuantos = 0;
+	caja *p, *q;
+	p = principio;
+	while(p){
+		q = p;
+		p = p -> siguiente;
+		delete q;
+	}
+	cuantos = 0;
 }
 
 
-bool Lista_ord::actualizar(int posicion, float valor){
-    caja *p;
-    int i = 0;
-    p = principio;
-  	if (!p){
-      donde = VACIO;
-      return false;
-    }
-    while (p){
-      if (i == posicion){
-      	p->valor = valor;
-      	return true;
-      }else{
-        anterior = p;
-        p = p -> siguiente;
-      }
-      i++;
-    }
-    return false;
+bool Lista_ord::actualizar(unsigned int posicion, double valor){
+	caja *p;
+	unsigned int i = 0;
+	p = principio;
+	if (!p){
+		donde = VACIO;
+		return false;
+	}
+	while (p){
+		if (i == posicion){
+			p->valor = valor;
+
+			return true;
+		}else{
+			anterior = p;
+			p = p -> siguiente;
+		}
+		i++;
+	}
+	return false;
 }
-bool Lista_ord::buscar(int a){
-    caja *p;
-    p = principio;
-    if (!p){
-      donde = VACIO;
-      return false;
-    }
+bool Lista_ord::buscar(double a){
+	caja *p;
+	p = principio;
+	if (!p){
+		donde = VACIO;
+		return false;
+	}
 
-    while (p){
-      if (p -> valor == a){
-        if(p == principio){
-                donde = PRINCIPIO;
-            }else{
-                donde = ENMEDIO;
-            }
-        return true;
-        }else if (p -> valor > a){
-        if(p == principio){
-                donde = PRINCIPIO;
-            }else{
-                donde = ENMEDIO;
-            }
-        return false;
-      }else{
-        anterior = p;
-        p = p -> siguiente;
-      }
-    }
-    donde = FINAL;
-    return false;
+	while (p){
+		if (p -> valor == a){
+			if(p == principio){
+				donde = PRINCIPIO;
+			}else{
+				donde = ENMEDIO;
+			}
+			return true;
+		}else if (p -> valor > a){
+			if(p == principio){
+				donde = PRINCIPIO;
+			}else{
+				donde = ENMEDIO;
+			}
+			return false;
+		}else{
+			anterior = p;
+			p = p -> siguiente;
+		}
+	}
+	donde = FINAL;
+	return false;
 }
-bool Lista_ord::buscarValor(int posicion, float *coeficiente){
-    caja *p;
-    int i = 0;
-    p = principio;
-    if (!p){
-      donde = VACIO;
-      return false;
-    }
+bool Lista_ord::buscarValor(unsigned int posicion, double *coeficiente){
+	caja *p;
+	unsigned int i = 0;
+	p = principio;
+	if (!p){
+		donde = VACIO;
+		return false;
+	}
 
-    while (p){
-      if (i == posicion){
-      	*coeficiente = p->valor;
-      	return true;
-      }else{
-        anterior = p;
-        p = p -> siguiente;
-      }
-      i++;
-    }
-    return false;
+	while (p){
+		if (i == posicion){
+			*coeficiente = p->valor;
+			return true;
+		}else{
+			anterior = p;
+			p = p -> siguiente;
+
+		}
+		i++;
+	}
+	return false;
 }
-bool Lista_ord::push(int a){
-  caja *p;
-  p = new caja;
-  p -> valor = a;
+bool Lista_ord::push(double a){
+	caja *p;
+	buscar(a);
+	p = new caja;
+	p -> valor = a;
+	if (donde == VACIO){
+		p -> siguiente = NULL;
+		principio = p;
+	}else if (donde == PRINCIPIO){
+		p -> siguiente = principio;
+		principio = p;
+	}else{
+		p -> siguiente = anterior -> siguiente;
+		anterior -> siguiente = p;
+	}
 
-  if (donde == VACIO){
-    p -> siguiente = NULL;
-    principio = p;
-  }else if (donde == PRINCIPIO){
-    p -> siguiente = principio;
-    principio = p;
-  }else{
-    p -> siguiente = anterior -> siguiente;
-    anterior -> siguiente = p;
-  }
-
-  cuantos++;
-  return true;
-}
-
-
-bool Lista_ord::borrar(int a){
-  caja *p;
-
-  if (buscar(a))
-        return false;
-
-  if (donde == PRINCIPIO){
-    p = principio;
-    principio = p -> siguiente;
-  }else if (donde == ENMEDIO){
-
-    p = anterior -> siguiente;
-    anterior -> siguiente = p -> siguiente;
-  }else{
-    p = anterior -> siguiente;
-    anterior -> siguiente = NULL;
-  }
-
-  delete p;
-  cuantos --;
-  return true;
+	cuantos++;
+	return true;
 }
 
-int Lista_ord::pop(){
-  int valor;
-  valor = principio -> valor;
 
-  principio = principio -> siguiente;
-  cuantos --;
-  return valor;
+bool Lista_ord::borrar(){
+	caja *p;
+	donde = FINAL;
+	p = anterior -> siguiente;
+	anterior -> siguiente = NULL;
+	delete p;
+	cuantos --;
+	return true;
 }
 
 int Lista_ord::get_cuantos(){
-  return cuantos;
+	return cuantos;
 }
+// Horner
+double horner(Lista_ord *coeffs, int s, double x)
+{
+	int i;
+	double res = 0.0;
+	double k;
+
+	for(i=s-1; i >= 0; i--)
+	{	
+		coeffs->buscarValor(i,&k);
+		res = res * x + k; 
+	}
+	return res;
+}
+
 
 int main(){
 	//Leer el archivo
@@ -195,24 +189,16 @@ int main(){
 	getline(polinomiosFile,lectura);
 	cantidad = atoi(lectura.c_str());
 	Lista_ord Poli[cantidad]; 
-	cout << "cantidad="<<cantidad <<"\n";
-	//Lista Polinomios[cantidad];	
-	cout << "lectura="<<lectura<<"\n";
 
 	// Asigno variables 
-	//int grados[cantidad+2];
-	//cout <<grados <<"\n";
 	unsigned int leidos = 0;
 	unsigned int i = 0;
-	int exponente=0;
+	unsigned int exponente=0;
 	stringstream iss;
 	while(leidos < cantidad){
-		//cout<< cantidad <<"cantidad\n";
 		getline(polinomiosFile,lectura);
 		unsigned int monomios = atoi(lectura.c_str());
-		int exponentemayor= 0;
-		cout <<"cantidad de Monomio : " << monomios;
-		cout <<"\n";
+		unsigned int exponentemayor= 0;
 
 		i = 0;
 		//while para encontrar el exponente mayor
@@ -221,7 +207,7 @@ int main(){
 			string monomio[2];
 			getline(polinomiosFile,lectura);
 			iss << lectura;
-			int pos  = 0;
+			unsigned int pos  = 0;
 			while ( getline(iss, read, ' ') )
 			{	
 				monomio[pos] = read;
@@ -232,19 +218,15 @@ int main(){
 			i++;
 			if (exponentemayor < exponente){
 				exponentemayor = exponente;
-				}
+			}
 		}	
-		cout <<exponentemayor<<" Exponente mayor del polinomio  "<<leidos<<"\n";
-		//crear listas vacias sin este while a las 17:16 min compila el codigo
-		int k=1;
+
+		unsigned int k=0;
 		while(k<=exponentemayor){
 			Poli[leidos].push(0);
 			k++;
 		}
-		cout<< Poli[leidos].get_cuantos() <<"= largo de la lista\n";
-		cout<<"\n";
 
-		//termino del while
 		leidos++;
 	}
 	polinomiosFile.close();
@@ -253,60 +235,47 @@ int main(){
 	ifstream polinomiosFile1; 
 	unsigned int cantidad1=0;
 	polinomiosFile1.open("entradaPolinomio.txt"); 
-	cout << "El archivo se abrio bien\n";
 
 	//obtener la cantidad y la lectura en que esta
 	getline(polinomiosFile1,lectura1);
 	cantidad1 = atoi(lectura1.c_str());
-	cout << "cantidad1="<<cantidad1 <<"\n";
-	//Lista Polinomios[cantidad1];	
-	cout << "lectura1="<<lectura1<<"\n";
 	leidos=0;
 	while(leidos < cantidad1){
-		//cout<< cantidad <<"cantidad\n";
 		getline(polinomiosFile1,lectura1);
 		unsigned int monomios = atoi(lectura1.c_str());
-		cout <<"Polinomio"<<leidos<<"\n";
-		cout <<"cantidad de Monomio : " << monomios<<"\n";
-		int exponente;
-		float coeficiente;
+		unsigned int exponente;
+		double coeficiente;
 		i = 0;
 		//While para obtener exponente y coeficientes del polinomio
-			while(i < monomios){
-				string read;
-				string monomio[2];
-				getline(polinomiosFile1,lectura1);
-				iss << lectura1;
-				int pos  = 0;
+		while(i < monomios){
+			string read;
+			string monomio[2];
+			getline(polinomiosFile1,lectura1);
+			iss << lectura1;
+			unsigned int pos  = 0;
 
-				while ( getline(iss, read, ' ') )
-				{	
-					monomio[pos] = read;
-					++pos;
-				}
-				iss.clear();
-				exponente = atoi((monomio[0]).c_str());
-				coeficiente = atof((monomio[1]).c_str());
-				//funcionaba a las 17:17, ants del while a continuacion
-				//SOLO REEMPLAZAR ;
-				Poli[leidos].actualizar(exponente,coeficiente);				
-				//cout<<Poli[leidos].buscar(1)<<"BUSCAR\n\n";
-				cout <<"exponente1:"<<exponente<<"\n";
-				cout <<"coeficiente1:"<<coeficiente<<"\n";
-				cout <<"\n";
-
-				i++;
+			while ( getline(iss, read, ' ') )
+			{	
+				monomio[pos] = read;
+				++pos;
 			}
-			leidos++;
+			iss.clear();
+			exponente = atoi((monomio[0]).c_str());
+			coeficiente = atof((monomio[1]).c_str());
+			Poli[leidos].actualizar(exponente,coeficiente);
+
+
+			i++;
+		}
+		leidos++;
 	}
 	string read;
 	ofstream salidaFile;
 	salidaFile.open("salidaPolinomio.txt");
 	
 	while (getline(polinomiosFile1,lectura1)){
-		cout<< "entre al while\n";
 		string operaciones[3];
-		int pos = 0;
+		unsigned int pos = 0;
 		iss << lectura1;
 		while ( getline(iss, read, ' ') )
 		{
@@ -314,30 +283,36 @@ int main(){
 			++pos;
 		}
 		iss.clear();
-		cout<< operaciones[0]<< "_operacion\n";
+
 		if(operaciones[0] == "COEFICIENTE"){
-			int polinomio = atoi(operaciones[1].c_str());
-			cout <<polinomio<<"_polinomio\n";
+			unsigned int polinomio = atoi(operaciones[1].c_str());
 			unsigned int exponente = atoi(operaciones[2].c_str());
-			cout <<exponente<<"_exponente\n";
-			float* coeficiente = (float*) malloc(sizeof(float));
-			//*coeficiente = 0;//borrar?
+			double* coeficiente = (double*) malloc(sizeof(double));
+			*coeficiente = 0;
 			Poli[polinomio].buscarValor(exponente, coeficiente);
-			float valor = *coeficiente;//borrar y definir arriba?
-			cout<< valor  <<"el valor encontrado\n";
+			double valor = *coeficiente;
 			free((void *) coeficiente);
 			salidaFile << std::fixed << std::setprecision(6) << valor << "\n";
 
 		}
 		else if(operaciones[0] == "EVALUAR"){
-			//int polinomio = atoi(operaciones[1].c_str());
-
-			//int grado = grados[polinomio];
-			//double valor = atof(operaciones[2].c_str());
 			// Horner
+			unsigned int polinomio = atoi(operaciones[1].c_str());
+			unsigned int grado = Poli[polinomio].get_cuantos();
+			double valor = atof(operaciones[2].c_str());
+			// lista de coefientes
+			salidaFile <<  horner(&Poli[polinomio], grado,valor) << "\n";
 
+			
 		}
+	}
+	i=0;
+	while(i<cantidad){
+		while (Poli[i].get_cuantos()!=0){
+			Poli[i].borrar();
+		}
+		i++;
 	}		
 	return 0;	
-		}			
+}			
 
