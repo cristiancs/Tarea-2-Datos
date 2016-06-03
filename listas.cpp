@@ -3,90 +3,183 @@
 #include <string>
 #include <stdlib.h>     /* atoi */
 #include <sstream>
+#include <iomanip>
 
 using namespace std;
 
-int tamano;
+struct caja{
+  int valor;
+  caja* siguiente;
+};
 
-typedef struct NodoLista {
-  	int        *dato;
-  	struct NodoLista *siguiente;
-  	int tamano;
-}Nodo;
+class Lista_ord{
+  caja *principio, *anterior;
+  int cuantos;
+  bool encontrado;
+  enum donde_enum{VACIO, PRINCIPIO, ENMEDIO, FINAL};
+  donde_enum donde;
+public:
+  Lista_ord();
+  ~Lista_ord(); 
+  bool buscarValor(int a, float* coeficiente);
+  bool buscar(int a);
+  bool actualizar(int a, int valor);
+  bool push(int a);
+  bool borrar(int a);
+  void pintar();
+  int pop();
+  int get_cuantos();
+};
 
-typedef struct ListaIdentificar {
-  	Nodo *inicio;
-  	Nodo *fin;
-  	int tamano;
-  	Nodo *nodo_actual;
-  	int posicion_actual;
-}Lista;
+Lista_ord::Lista_ord(){
+    principio = NULL;
+    anterior = NULL;
+    cuantos = 0;
+    encontrado = false;
+    donde = VACIO;
+}
 
-Lista *inicializar (){
-	Lista *lista;
-	lista = (Lista *) malloc(sizeof(Lista));
- 	lista->inicio = (Nodo *) malloc(sizeof(Nodo));
- 	lista->fin = (Nodo *) malloc(sizeof(Nodo));
- 	lista->tamano = 0;
- 	return lista;
+Lista_ord::~Lista_ord(){
+    caja *p, *q;
+    p = principio;
+    while(p){
+        q = p;
+        p = p -> siguiente;
+        delete q;
+    }
+    cuantos = 0;
 }
 
 
-int append(Lista * lista, int *dato){
-  	Nodo *nuevoNodo;
-  	if ((nuevoNodo = (Nodo *) malloc (sizeof (Nodo))) == NULL)
-    	return -1;
-  	nuevoNodo->dato = dato;
-  	nuevoNodo->siguiente = NULL;
-  	if(nuevoNodo->tamano == 0){
-	  	lista->inicio = nuevoNodo;
-	  	lista->fin = nuevoNodo;
-	  	lista->tamano++;
-	}else{
-		lista->fin->siguiente = nuevoNodo;
-	  	lista->fin = nuevoNodo;
-	  	lista->tamano++;
-	}
-  	return 0;
+bool Lista_ord::actualizar(int posicion, int valor){
+    caja *p;
+    int i = 0;
+    p = principio;
+    if (!p){
+      donde = VACIO;
+      return false;
+    }
+
+    while (p){
+      if (i == posicion){
+      	p->valor = valor;
+      	return true;
+      }else{
+        anterior = p;
+        p = p -> siguiente;
+      }
+      i++;
+    }
+    return false;
+}
+bool Lista_ord::buscar(int a){
+    caja *p;
+    p = principio;
+    if (!p){
+      donde = VACIO;
+      return false;
+    }
+
+    while (p){
+      if (p -> valor == a){
+        if(p == principio){
+                donde = PRINCIPIO;
+            }else{
+                donde = ENMEDIO;
+            }
+        return true;
+        }else if (p -> valor > a){
+        if(p == principio){
+                donde = PRINCIPIO;
+            }else{
+                donde = ENMEDIO;
+            }
+        return false;
+      }else{
+        anterior = p;
+        p = p -> siguiente;
+      }
+    }
+    donde = FINAL;
+    return false;
+}
+bool Lista_ord::buscarValor(int posicion, float *coeficiente){
+    caja *p;
+    int i = 0;
+    p = principio;
+    if (!p){
+      donde = VACIO;
+      return false;
+    }
+
+    while (p){
+      if (i == posicion){
+      	*coeficiente = p->valor;
+      	return true;
+      }else{
+        anterior = p;
+        p = p -> siguiente;
+      }
+      i++;
+    }
+    return false;
+}
+bool Lista_ord::push(int a){
+  caja *p;
+  p = new caja;
+  p -> valor = a;
+
+  if (donde == VACIO){
+    p -> siguiente = NULL;
+    principio = p;
+  }else if (donde == PRINCIPIO){
+    p -> siguiente = principio;
+    principio = p;
+  }else{
+    p -> siguiente = anterior -> siguiente;
+    anterior -> siguiente = p;
+  }
+
+  cuantos++;
+  return true;
 }
 
-void borrar(Lista * lista){
-	if(lista != NULL){
-		if (lista->inicio->siguiente == NULL){
-			free( (void *) lista->inicio);
-		
-		}
-		else{
-			Nodo *temp = lista->inicio->siguiente;
-			while(temp!=NULL){
-				free( (void *) lista->inicio);
-				lista->inicio = temp;
-				temp = lista->inicio->siguiente;
 
-			}
-		}
-	}
+bool Lista_ord::borrar(int a){
+  caja *p;
+
+  if (buscar(a))
+        return false;
+
+  if (donde == PRINCIPIO){
+    p = principio;
+    principio = p -> siguiente;
+  }else if (donde == ENMEDIO){
+
+    p = anterior -> siguiente;
+    anterior -> siguiente = p -> siguiente;
+  }else{
+    p = anterior -> siguiente;
+    anterior -> siguiente = NULL;
+  }
+
+  delete p;
+  cuantos --;
+  return true;
 }
 
-void moverAdelante(Lista *lista){
-	if (lista != NULL && lista->nodo_actual != lista->fin){
-		lista->posicion_actual +=1;
-	}
-	
+int Lista_ord::pop(){
+  int valor;
+  valor = principio -> valor;
 
+  principio = principio -> siguiente;
+  cuantos --;
+  return valor;
 }
 
-void moverAtras(Lista *lista){
-	if (lista != NULL && lista->nodo_actual != lista->inicio){
-		lista->posicion_actual -=1;
-	}
-	
-
+int Lista_ord::get_cuantos(){
+  return cuantos;
 }
-
-//void insertarpos(Lista *lista, int *dato){
-
-//}
 
 int main(){
 	//Leer el archivo
@@ -94,7 +187,6 @@ int main(){
 	string lectura;
 	ifstream polinomiosFile; 
 	polinomiosFile.open("entradaPolinomio.txt"); 
-	cout << "El archivo se abrio bien\n";
 
    	// Verificar si se abrio bien el archivo
 	if (!polinomiosFile.is_open()) {
@@ -104,7 +196,7 @@ int main(){
 	//obtener la cantidad y la lectura en que esta
 	getline(polinomiosFile,lectura);
 	cantidad = atoi(lectura.c_str());
-	Lista Poli[cantidad];
+	Lista_ord Poli[cantidad]; 
 	cout << "cantidad="<<cantidad <<"\n";
 	//Lista Polinomios[cantidad];	
 	cout << "lectura="<<lectura<<"\n";
@@ -124,7 +216,6 @@ int main(){
 		cout <<"cantidad de Monomio : " << monomios;
 		cout <<"\n";
 
-		int coeficiente;
 		i = 0;
 		//while para encontrar el exponente mayor
 		while(i < monomios){
@@ -146,13 +237,15 @@ int main(){
 				}
 		}	
 		cout <<exponentemayor<<" Exponente mayor del polinomio  "<<leidos<<"\n";
-		cout <<"\n";
 		//crear listas vacias sin este while a las 17:16 min compila el codigo
-		k=0
+		int k=1;
 		while(k<=exponentemayor){
-			append(Poli[leidos],0); 
-			k++
+			Poli[leidos].push(0);
+			k++;
 		}
+		cout<< Poli[leidos].get_cuantos() <<"= largo de la lista\n";
+		cout<<"\n";
+
 		//termino del while
 		leidos++;
 	}
@@ -160,7 +253,7 @@ int main(){
 
 	string lectura1;
 	ifstream polinomiosFile1; 
-	int cantidad1=0;
+	unsigned int cantidad1=0;
 	polinomiosFile1.open("entradaPolinomio.txt"); 
 	cout << "El archivo se abrio bien\n";
 
@@ -197,10 +290,8 @@ int main(){
 				exponente = atoi((monomio[0]).c_str());
 				coeficiente = atof((monomio[1]).c_str());
 				//funcionaba a las 17:17, ants del while a continuacion
-				//SOLO REEMPLAZAR 
-				//int largo;
-				//largo= Poli[leidos]->tamano;
-				//------>>> actualizar(Poli[leidos],exponente, coeficiente);
+				//SOLO REEMPLAZAR ;
+				Poli[leidos].actualizar(exponente,coeficiente);
 				cout <<"exponente1:"<<exponente<<"\n";
 				cout <<"coeficiente1:"<<coeficiente<<"\n";
 				cout <<"\n";
@@ -208,9 +299,15 @@ int main(){
 				i++;
 			}
 			leidos++;
-
-	while (getline(polinomiosFile,lectura)){
+	}
+	string read;
+	ofstream salidaFile;
+	salidaFile.open("salidaPolinomio.txt");
+	cout<< getline(polinomiosFile1,lectura1)<<"\n";
+	while (getline(polinomiosFile1,lectura1)){
+		cout<< "entre al while\n";
 		string operaciones[3];
+		cout <<operaciones;
 		int pos = 0;
 		iss << lectura;
 		while ( getline(iss, read, ' ') )
@@ -220,7 +317,16 @@ int main(){
 		}
 		iss.clear();
 		if(operaciones[0] == "COEFICIENTE"){
-
+			int polinomio = atoi(operaciones[1].c_str());
+			cout <<polinomio<<"\n";
+			unsigned int exponente = atoi(operaciones[2].c_str());
+			float* coeficiente = (float*) malloc(sizeof(float));
+			*coeficiente = 0;
+			Poli[polinomio].buscarValor(exponente, coeficiente);
+			float valor = *coeficiente;
+			cout<< valor<<"el valor encontrado\n";
+			free((void *) coeficiente);
+			salidaFile << std::fixed << std::setprecision(6) << valor << "\n";
 
 		}
 		else if(operaciones[0] == "EVALUAR"){
@@ -228,23 +334,6 @@ int main(){
 
 		}
 	}		
-	polinomiosFile.close();		
-	return 0;
-		}		
+	return 0;	
+		}			
 
-//laeiu maeiour aeioustaeioubaeiou saieouraeiounaeiou
-
-
-
-}
-
-
-//Lista *L1 = inicializar();
-				//unsigned int k=0;
-				//while(k<exponentemayor+1){
-				//	append(L1, 0);
-
-				//	k++;
-//int append(Lista * lista, char *dato);
-				//cout <<L1->inicio<<"imprimo lista\n";
-				//borrar(L1);
