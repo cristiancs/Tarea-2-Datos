@@ -306,6 +306,8 @@ int main(){
 			
 		}
 	}
+	polinomiosFile1.close();
+	salidaFile.close();
 	i=0;
 	while(i<cantidad){
 		while (Poli[i].get_cuantos()!=0){
