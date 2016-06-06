@@ -158,6 +158,7 @@ int Lista_ord::get_cuantos(){
 	return cuantos;
 }
 // Horner
+<<<<<<< HEAD
 double horner(Lista_ord *coeffs, int s, double x, double *k)
 {
 	int i;
@@ -167,6 +168,18 @@ double horner(Lista_ord *coeffs, int s, double x, double *k)
 	{	
 		coeffs->buscarValor(i,k);
 		res = res * x + *k; 
+=======
+double horner(Lista_ord *coeffs, int s, double x)
+{
+	int i;
+	double res = 0.0;
+	double k;
+
+	for(i=s-1; i >= 0; i--)
+	{	
+		coeffs->buscarValor(i,&k);
+		res = res * x + k; 
+>>>>>>> origin/master
 	}
 	return res;
 }
@@ -300,10 +313,14 @@ int main(){
 			unsigned int grado = Poli[polinomio].get_cuantos();
 			double valor = atof(operaciones[2].c_str());
 			// lista de coefientes
+<<<<<<< HEAD
 			double *k = (double *) malloc(sizeof(double));
 			double retorno = horner(&Poli[polinomio], grado,valor, k);
 			free((void *) k);
 			salidaFile << retorno << "\n";
+=======
+			salidaFile <<  horner(&Poli[polinomio], grado,valor) << "\n";
+>>>>>>> origin/master
 
 			
 		}
@@ -312,9 +329,17 @@ int main(){
 	salidaFile.close();
 	i=0;
 	while(i<cantidad){
+<<<<<<< HEAD
 		Poli[i].~Lista_ord();
 		i++;
 	}
+=======
+		while (Poli[i].get_cuantos()!=0){
+			Poli[i].borrar();
+		}
+		i++;
+	}		
+>>>>>>> origin/master
 	return 0;	
 }			
 
